@@ -1,23 +1,36 @@
 
+
 class PigLatinizer
-    attr_reader :words
-   
-    def initialize(words)
-      @words = words
-    end
-   
-    def piglatinize   
-      words = words.downcase.split(" ")
-      words.collect do |word|
-        if word.scan(/^[aeiou]/) > 0 #aka if word starts with vowel. Since .scan returns an array, the array count would be 1, cause the .scan would return an array containing the word it found that started with a vowel
-           word.concat("way") #.concat adds string to end of word
-        else 
-            word.slice!(0) until word.scan(/^[aeiou]/) > 0  #slice removes first letter of word, aka first position (0). 
-            word.concat("ay")
-        end
-        end
-    end
-    
+
+  def piglatinize(input_str)
+    piglatinize_word(input_str)
+    if input_str.split(" ").count > 1 
+        piglatinize_sentence(input_str) 
+    else piglatinize_word(input_str)
+  end
 end
 
- 
+
+  def piglatinize_word(word)
+    if word[0].match(/[aAeEiIoOuU]/)
+       word = word + "w"
+    else
+      letter_array = word.split("")
+      con = []
+      while !letter_array.first.match(/[aAeEiIoOuU]/)
+        con << letter_array.shift
+      end
+      word = letter_array.join("") + con.join("")
+    end
+    word + "ay"
+  end
+
+  def piglatinize_sentence(sentence)
+    word_array = sentence.split(" ")
+    new_word_array = []
+    word_array.each {|word| new_word_array << piglatinize_word(word)}
+    new_word_array.join(" ")
+  end
+
+
+end
